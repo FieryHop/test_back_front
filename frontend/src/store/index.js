@@ -22,7 +22,6 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.login(credentials);
         localStorage.setItem('jwt', response.data.access_token);
 
-        // Получаем ID пользователя из токена
         const tokenParts = response.data.access_token.split('.');
         const payload = JSON.parse(atob(tokenParts[1]));
         this.user = { id: payload.sub };
@@ -38,7 +37,6 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('jwt');
       this.user = null;
     },
-    // Восстановление состояния при загрузке страницы
     initialize() {
       const token = localStorage.getItem('jwt');
       if (token) {
@@ -66,21 +64,19 @@ export const useTaskStore = defineStore('tasks', {
     filteredTasks() {
       let tasks = this.tasks;
 
-      // Фильтрация по статусу
       if (this.filter === 'completed') {
         tasks = tasks.filter(task => task.status);
       } else if (this.filter === 'active') {
         tasks = tasks.filter(task => !task.status);
       }
 
-      // Сортировка по дате
       return [...tasks].sort((a, b) => {
         const dateA = new Date(a.created_at);
         const dateB = new Date(b.created_at);
 
         return this.sort === 'newest'
-          ? dateB - dateA  // Новые сверху
-          : dateA - dateB; // Старые сверху
+          ? dateB - dateA  
+          : dateA - dateB; 
       });
     }
   },
@@ -89,11 +85,10 @@ export const useTaskStore = defineStore('tasks', {
       try {
         const response = await api.getTasks();
 
-        // Убедитесь, что задачи имеют правильный формат
         this.tasks = response.data.map(task => ({
           id: task.id,
           title: task.title,
-          description: task.description || '', // Добавлено для обработки null
+          description: task.description || '', 
           status: task.status,
           created_at: task.created_at || new Date().toISOString()
         }));
