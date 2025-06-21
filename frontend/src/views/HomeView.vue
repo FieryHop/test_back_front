@@ -1,0 +1,24 @@
+<template>
+  <div>
+    <AppHeader />
+    <main>
+      <TaskForm />
+      <TaskList />
+    </main>
+  </div>
+</template>
+
+<script setup>
+import AppHeader from '@/components/AppHeader.vue';
+import TaskForm from '@/components/TaskForm.vue';
+import TaskList from '@/components/TaskList.vue';
+</script>
+
+<style scoped>
+main {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+</style>
