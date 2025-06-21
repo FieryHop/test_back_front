@@ -16,17 +16,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Инициализация расширений
 db.init_app(app)
 jwt = JWTManager(app)
 CORS(app, supports_credentials=True)
 
-# Create database tables
 with app.app_context():
     db.create_all()
 
 
-# Корневой маршрут
 @app.route('/')
 def home():
     return jsonify({
@@ -40,13 +37,11 @@ def home():
     })
 
 
-# Обработка favicon
 @app.route('/favicon.ico')
 def favicon():
     return '', 404
 
 
-# Error handlers
 @app.errorhandler(400)
 def bad_request(e):
     return jsonify(error=str(e)), 400
@@ -100,7 +95,7 @@ def login():
 @jwt_required()
 def get_tasks():
     try:
-        # Преобразуем user_id к int
+        
         user_id = int(get_jwt_identity())
         tasks = Task.query.filter_by(user_id=user_id).all()
         return jsonify([{
@@ -122,7 +117,7 @@ def create_task():
         return jsonify(error="Title is required"), 400
 
     try:
-        # Преобразуем user_id к int
+        
         user_id = int(get_jwt_identity())
         task = Task(
             title=data['title'],
@@ -140,11 +135,11 @@ def create_task():
 @jwt_required()
 def update_task(task_id):
     try:
-        # Преобразуем user_id к int
+       
         current_user_id = int(get_jwt_identity())
         task = Task.query.get_or_404(task_id)
 
-        # Сравниваем числа
+    
         if task.user_id != current_user_id:
             return jsonify(error="Forbidden: You don't have permission to update this task"), 403
 
@@ -162,11 +157,11 @@ def update_task(task_id):
 @jwt_required()
 def delete_task(task_id):
     try:
-        # Преобразуем user_id к int
+        
         current_user_id = int(get_jwt_identity())
         task = Task.query.get_or_404(task_id)
 
-        # Сравниваем числа
+        
         if task.user_id != current_user_id:
             return jsonify(error="Forbidden: You don't have permission to delete this task"), 403
 
