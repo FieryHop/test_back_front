@@ -70,7 +70,6 @@ const startEditing = async () => {
   editData.description = props.task.description;
   isEditing.value = true;
 
-  // Фокусируемся на поле ввода после перехода в режим редактирования
   await nextTick();
   if (titleInput.value) {
     titleInput.value.focus();
