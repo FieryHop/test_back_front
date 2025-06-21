@@ -8,7 +8,6 @@ const api = axios.create({
   withCredentials: true
 });
 
-// Добавляем перехватчик для JWT токена
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('jwt');
   if (token) {
@@ -17,20 +16,17 @@ api.interceptors.request.use(config => {
   return config;
 });
 
-// Логирование запросов
 api.interceptors.request.use(config => {
   console.log('Request:', config.method, config.url, config.data);
   return config;
 });
 
-// Логирование ответов
 api.interceptors.response.use(response => {
   console.log('Response:', response.config.url, response.data);
   return response;
 }, error => {
   console.error('API Error:', error.response?.data || error.message);
 
-  // Только для ошибок аутентификации (не для ошибок авторизации)
   if (error.response?.status === 401 &&
       !error.response?.data?.error?.includes("Forbidden")) {
     localStorage.removeItem('jwt');
