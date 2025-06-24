@@ -8,7 +8,7 @@ const api = axios.create({
   withCredentials: true
 });
 
-const API_PREFIX = '/api';
+
 
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('jwt');
