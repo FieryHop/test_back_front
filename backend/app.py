@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 )
 from dotenv import load_dotenv
 from datetime import datetime
-from models import db, User, Task
+from backend.models import db, User, Task
 from flask_cors import CORS
 
 load_dotenv()
