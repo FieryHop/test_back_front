@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (
@@ -19,20 +20,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 jwt = JWTManager(app)
 
-def is_origin_allowed(origin):
-    allowed_domains = [
-        "https://test-back-front-658r.vercel.app",
-        "https://test-back-front.vercel.app",
-        "https://*.vercel.app",
-        "http://localhost:5173"
-    ]
-    
-    # Разрешаем все поддомены vercel.app
-    if re.match(r"https://[\w-]+\.vercel\.app", origin):
-        return True
-        
-    return origin in allowed_domains
+allowed_origins = [
+    "https://test-back-front-658r.vercel.app",
+    "https://test-back-front.vercel.app",
+    "https://*.vercel.app",
+    "http://localhost:5173"
+]
 
+# Настройка CORS
 CORS(app, 
      resources={r"/*": {
          "origins": allowed_origins,
