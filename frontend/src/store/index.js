@@ -29,7 +29,14 @@ export const useAuthStore = defineStore('auth', {
         this.error = null;
         return true;
       } catch (error) {
-        this.error = error.response?.data?.error || 'Login failed';
+
+        if (error.response) {
+          this.error = error.response.data?.error || 'Login failed';
+        } else if (error.request) {
+          this.error = 'Network error: Server not responding';
+        } else {
+          this.error = error.message || 'Login failed';
+        }
         return false;
       }
     },
