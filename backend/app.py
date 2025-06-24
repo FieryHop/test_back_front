@@ -18,7 +18,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 jwt = JWTManager(app)
-CORS(app, supports_credentials=True)
+CORS(app, 
+     resources={
+         r"/*": {
+             "origins": [
+                 "https://test-back-front-658r.vercel.app",
+                 "https://test-back-front.vercel.app",
+                 "https://test-back-front-git-main-.*\.vercel\.app",  # Паттерн для превью
+                 "http://localhost:5173"  # Для локальной разработки
+             ],
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "allow_headers": ["Content-Type", "Authorization"],
+             "supports_credentials": True,
+             "max_age": 600  # Кешировать preflight на 10 минут
+         }
+     }
+)
+
 
 with app.app_context():
     db.create_all()
