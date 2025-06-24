@@ -13,6 +13,9 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     rollupOptions: {
+      input: {
+        main: './index.html'
+      },
       output: {
         assetFileNames: 'assets/[name]-[hash][extname]'
       }
