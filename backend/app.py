@@ -23,6 +23,7 @@ def is_origin_allowed(origin):
     allowed_domains = [
         "https://test-back-front-658r.vercel.app",
         "https://test-back-front.vercel.app",
+        "https://*.vercel.app",
         "http://localhost:5173"
     ]
     
@@ -33,21 +34,28 @@ def is_origin_allowed(origin):
     return origin in allowed_domains
 
 CORS(app, 
-     resources={r"/*": {"origins": is_origin_allowed}},
-     supports_credentials=True,
-     allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+     resources={r"/*": {
+         "origins": allowed_origins,
+         "supports_credentials": True,
+         "allow_headers": ["Content-Type", "Authorization"],
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+     }}
 )
 @app.before_request
 def handle_options_request():
     if request.method == "OPTIONS":
         response = app.make_default_options_response()
         headers = response.headers
-        headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
-        headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-        headers['Access-Control-Allow-Credentials'] = 'true'
-        headers['Access-Control-Max-Age'] = '600'
+        origin = request.headers.get('Origin', '')
+        
+        # Проверяем, разрешен ли origin
+        if any(origin.startswith(o.replace('*', '')) for o in allowed_origins if '*' in o) or origin in allowed_origins:
+            headers['Access-Control-Allow-Origin'] = origin
+            headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            headers['Access-Control-Allow-Credentials'] = 'true'
+            headers['Access-Control-Max-Age'] = '600'
+        
         return response
 
 with app.app_context():
