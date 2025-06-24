@@ -11,6 +11,13 @@
 
 <script setup>
 import AuthForm from '@/components/AuthForm.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToRegister = () => {
+  router.push('/register');
+};
 </script>
 
 <style scoped>
